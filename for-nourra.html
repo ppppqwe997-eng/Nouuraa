@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For NourraMine - AI Powered Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink-soft: #fce7f3;
+            --pink-deep: #fbcfe8;
+            --text-main: #4a4a4a;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background-color: #fff;
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+            margin: 0;
+        }
+        .font-handwriting { font-family: 'Dancing Script', cursive; }
+        .page {
+            display: none;
+            height: 100vh; width: 100vw;
+            padding: 2rem;
+            flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center;
+            position: absolute; top: 0; left: 0;
+            background: linear-gradient(180deg, #ffffff 0%, #fce7f3 100%);
+        }
+        .page.active { display: flex; animation: fadeIn 1s forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.97); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        .grain {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05; pointer-events: none; z-index: 50;
+        }
+        .floating { animation: floating 3s ease-in-out infinite; }
+        @keyframes floating {
+            0%,100% { transform: translateY(0); }
+            50%     { transform: translateY(-15px); }
+        }
+        .countdown-box {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 2rem;
+            border: 1px solid white;
+            box-shadow: 0 10px 30px rgba(252,231,243,0.5);
+        }
+        .music-btn {
+            position: fixed; bottom: 30px; right: 30px; z-index: 100;
+            background: white; width: 56px; height: 56px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            cursor: pointer; border: 2px solid var(--pink-deep);
+            transition: transform 0.2s; user-select: none;
+        }
+        .music-btn:hover { transform: scale(1.1); }
+        @keyframes spin-note {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+        .spin { display: inline-block; animation: spin-note 2s linear infinite; }
+        .music-tooltip {
+            position: fixed; bottom: 96px; right: 20px;
+            background: white; border: 1px solid #fbcfe8;
+            border-radius: 12px; padding: 7px 14px;
+            font-size: 0.72rem; color: #ec4899;
+            opacity: 0; pointer-events: none;
+            white-space: nowrap; z-index: 101;
+            transition: opacity 0.4s;
+        }
+        .music-tooltip.show { opacity: 1; }
+        .nav-btn {
+            margin-top: 1.5rem; padding: 0.8rem 2rem;
+            background: white; border-radius: 50px;
+            font-weight: 600; color: #ec4899;
+            box-shadow: 0 4px 10px rgba(236,72,153,0.2);
+            transition: all 0.3s; border: 1px solid #fbcfe8;
+            cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(236,72,153,0.3);
+            background: #fff5f7;
+        }
+        .loading-dots::after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        @keyframes dots {
+            0%,20%   { content: '.'; }
+            40%      { content: '..'; }
+            60%      { content: '...'; }
+            80%,100% { content: ''; }
+        }
+        .ai-input {
+            width: 100%; max-width: 300px;
+            padding: 0.8rem; border-radius: 15px;
+            border: 1px solid #fbcfe8; margin-bottom: 1rem;
+            outline: none; background: rgba(255,255,255,0.8);
+            font-size: 0.9rem; font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        /* Hidden SoundCloud iframe */
+        #sc-widget {
+            position: fixed; width: 1px; height: 1px;
+            top: -9999px; left: -9999px;
+            opacity: 0; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+
+    <!-- SoundCloud Widget (hidden) -->
+    <iframe id="sc-widget"
+        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/keshibeats/track-4&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false"
+        allow="autoplay">
+    </iframe>
+
+    <div class="music-tooltip" id="musicTooltip">🎶 Soft Spot — keshi</div>
+
+    <div class="music-btn" id="musicBtn" onclick="toggleMusic()">
+        <span id="musicIcon" style="font-size:1.3rem;">🎵</span>
+    </div>
+
+    <!-- Page 1 -->
+    <section id="page1" class="page active">
+        <h2 class="text-sm tracking-[0.4em] uppercase mb-4 opacity-50">28 Maret 2026</h2>
+        <h1 class="text-6xl md:text-8xl font-handwriting text-pink-500 mb-6 floating">Haloo Nourra..</h1>
+        <p id="type1" class="text-lg md:text-xl font-light italic max-w-md mb-2" style="min-height:2rem;"></p>
+        <button class="nav-btn" onclick="startExperience()">Buka Suratnya ✨</button>
+    </section>
+
+    <!-- Page 2 -->
+    <section id="page2" class="page">
+        <div class="max-w-xl bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-sm border border-pink-100 relative">
+            <div class="absolute -top-5 -left-5 text-4xl transform -rotate-12">💌</div>
+            <h3 class="font-handwriting text-3xl mb-6 text-pink-400">Sayangku Albyra,</h3>
+            <div class="text-left space-y-4 text-gray-600 leading-relaxed italic">
+                <p>Selamatt tanggall 28, gakerasaa yaa udahhh sejauhh iniii. Makaasiii buatt kamuu yangg udahh hadirr buatt akuu, buatt kitaa.</p>
+                <p>Maaff aku belumm bisaa jadii <i>how u want boyfriend</i>. I wish wwee still togetherr and foreverr.</p>
+                <p class="font-bold text-pink-500 text-2xl mt-6">HAPPYY 28 💗💗</p>
+            </div>
+            <button class="nav-btn w-full" onclick="nextPage(3)">Sentuhan Ajaib AI.. 🤖</button>
+        </div>
+    </section>
+
+    <!-- Page 3 -->
+    <section id="page3" class="page">
+        <div class="max-w-2xl px-6 w-full overflow-y-auto">
+            <h2 class="text-3xl font-handwriting text-pink-500 mb-4">Pesan dari Bintang</h2>
+            <p class="text-xs uppercase tracking-widest opacity-40 mb-8">✨ Powered by Gemini 2.5</p>
+            <div id="ai-output"
+                 class="bg-white/80 p-8 rounded-3xl border-2 border-dashed border-pink-300 min-h-[150px] flex items-center justify-center italic text-lg text-gray-700 font-handwriting leading-relaxed mb-6">
+                Tanya apa saja atau masukkan kenangan kita...
+            </div>
+            <div class="flex flex-col items-center">
+                <input type="text" id="ai-input-val"
+                       placeholder="Kenangan, mood, atau tanya sesuatu..."
+                       class="ai-input">
+                <div class="flex gap-2 flex-wrap justify-center">
+                    <button onclick="generateAI('memory')" class="nav-btn !mt-0 !bg-pink-500 text-white border-none">✨ Tenun Kenangan</button>
+                    <button onclick="generateAI('poem')"   class="nav-btn !mt-0 !bg-pink-100 !text-pink-600 border-none">✨ Puisi Mood</button>
+                    <button onclick="generateAI('advice')" class="nav-btn !mt-0">✨ Tips Cinta</button>
+                </div>
+            </div>
+            <button class="block mx-auto mt-12 opacity-50 text-sm underline cursor-pointer" onclick="nextPage(4)">Halaman Terakhir →</button>
+        </div>
+    </section>
+
+    <!-- Page 4 -->
+    <section id="page4" class="page">
+        <div class="countdown-box text-center">
+            <h2 class="text-2xl font-semibold text-pink-600 mb-2">Counting Down to</h2>
+            <h3 class="text-4xl font-handwriting text-gray-800 mb-8">Our Anniversary 2026</h3>
+            <div class="grid grid-cols-4 gap-4 md:gap-8 justify-center mb-8">
+                <div><span id="days"  class="text-4xl md:text-6xl font-bold text-pink-500">00</span><p class="text-xs uppercase tracking-widest opacity-50">Hari</p></div>
+                <div><span id="hours" class="text-4xl md:text-6xl font-bold text-pink-500">00</span><p class="text-xs uppercase tracking-widest opacity-50">Jam</p></div>
+                <div><span id="mins"  class="text-4xl md:text-6xl font-bold text-pink-500">00</span><p class="text-xs uppercase tracking-widest opacity-50">Menit</p></div>
+                <div><span id="secs"  class="text-4xl md:text-6xl font-bold text-pink-500">00</span><p class="text-xs uppercase tracking-widest opacity-50">Detik</p></div>
+            </div>
+            <p class="italic text-gray-500 mb-8 max-w-xs mx-auto">"I'll wait for that day, and every day after."</p>
+            <button class="nav-btn" onclick="nextPage(1)">Ulangi Perjalanan 🔄</button>
+        </div>
+        <div class="mt-10 text-xs opacity-30 tracking-[0.5em] uppercase">Wildan & Albyra</div>
+    </section>
+
+    <!-- SoundCloud Widget API -->
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+    <script>
+        const widget = SC.Widget(document.getElementById('sc-widget'));
+        let isPlaying = false;
+        let scReady   = false;
+        let pending   = false;
+
+        widget.bind(SC.Widget.Events.READY, () => {
+            scReady = true;
+            widget.setVolume(70);
+            if (pending) { widget.play(); pending = false; }
+        });
+        widget.bind(SC.Widget.Events.PLAY,   () => { isPlaying = true;  setIcon(true);  });
+        widget.bind(SC.Widget.Events.PAUSE,  () => { isPlaying = false; setIcon(false); });
+        widget.bind(SC.Widget.Events.FINISH, () => { widget.seekTo(0); widget.play(); });
+
+        function setIcon(playing) {
+            document.getElementById('musicIcon').innerHTML = playing
+                ? '<span class="spin">🎵</span>' : '🎵';
+        }
+
+        function playMusic()  { scReady ? widget.play()  : (pending = true); }
+        function pauseMusic() { scReady && widget.pause(); }
+        function toggleMusic() {
+            if (isPlaying) { pauseMusic(); }
+            else { playMusic(); showTooltip(); }
+        }
+        function showTooltip() {
+            const t = document.getElementById('musicTooltip');
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function startExperience() {
+            if (!isPlaying) { playMusic(); showTooltip(); }
+            nextPage(2);
+        }
+
+        function nextPage(n) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page' + n).classList.add('active');
+            if (n === 1) typeEffect('type1', 'Setiap hari bersamamu terasa seperti mimpi yang jadi kenyataan...');
+        }
+
+        function typeEffect(id, text) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = ''; let i = 0;
+            const t = setInterval(() => {
+                if (i < text.length) el.textContent += text[i++];
+                else clearInterval(t);
+            }, 60);
+        }
+
+        // Gemini
+        const apiKey = '';
+        async function fetchGemini(prompt, system) {
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const res = await fetch(
+                        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+                        { method:'POST', headers:{'Content-Type':'application/json'},
+                          body: JSON.stringify({ contents:[{parts:[{text:prompt}]}], systemInstruction:{parts:[{text:system}]} }) }
+                    );
+                    if (!res.ok) throw new Error();
+                    const d = await res.json();
+                    return d.candidates?.[0]?.content?.parts?.[0]?.text;
+                } catch(e) {
+                    if (i===4) throw e;
+                    await new Promise(r => setTimeout(r, delay)); delay*=2;
+                }
+            }
+        }
+
+        async function generateAI(type) {
+            const out = document.getElementById('ai-output');
+            const val = document.getElementById('ai-input-val').value.trim();
+            out.innerHTML = '<span class="loading-dots text-pink-400">Gemini sedang merangkai keajaiban</span>';
+            const sys = "Kamu adalah pendamping romantis Wildan untuk pacarnya, Nourra. Balaslah dalam Bahasa Indonesia yang sangat puitis, estetik, dan manis. Gunakan panggilan 'Nourra' atau 'sayang'.";
+            let prompt = type==='memory'
+                ? (val ? `Buatkan narasi romantis pendek tentang kenangan: "${val}".` : (out.textContent='Masukkan kata kenangan kita dulu ya, Nourra...', null))
+                : type==='poem'
+                ? (val ? `Buatkan puisi pendek berdasarkan suasana hati: "${val}".` : 'Buatkan satu bait puisi cinta dari hati Wildan untuk Nourra.')
+                : (val ? `Nourra bertanya: "${val}". Berikan tips hubungan yang bijak dan penuh kasih.` : 'Berikan satu tips agar hubungan Wildan dan Nourra selalu bahagia.');
+            if (!prompt) return;
+            try {
+                const text = await fetchGemini(prompt, sys);
+                typeEffect('ai-output', text || 'Bintang sedang berbisik hal lain, coba lagi ya.');
+                document.getElementById('ai-input-val').value = '';
+            } catch { out.textContent = 'Sepertinya semesta sedang sibuk, tapi cintaku tetap untukmu.'; }
+        }
+
+        // Countdown
+        const target = new Date('October 28, 2026 00:00:00').getTime();
+        setInterval(() => {
+            const d = Math.max(0, target - Date.now());
+            const pad = n => String(n).padStart(2,'0');
+            document.getElementById('days').textContent  = pad(Math.floor(d/86400000));
+            document.getElementById('hours').textContent = pad(Math.floor(d%86400000/3600000));
+            document.getElementById('mins').textContent  = pad(Math.floor(d%3600000/60000));
+            document.getElementById('secs').textContent  = pad(Math.floor(d%60000/1000));
+        }, 1000);
+
+        window.onload = () => typeEffect('type1', 'Setiap hari bersamamu terasa seperti mimpi yang jadi kenyataan...');
+    </script>
+</body>
+</html>
