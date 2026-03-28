@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>For Nourra ✨</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+overflow:hidden;
+font-family:'Plus Jakarta Sans',sans-serif;
+background:linear-gradient(#fff,#ffe4ec);
+color:#444;
+}
+
+.page{
+display:none;
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100vh;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+text-align:center;
+padding:2rem;
+}
+
+.page.active{
+display:flex;
+animation:fade 0.8s;
+}
+
+@keyframes fade{
+from{opacity:0; transform:scale(.97)}
+to{opacity:1; transform:scale(1)}
+}
+
+.font-love{
+font-family:'Dancing Script',cursive;
+}
+
+.nav-btn{
+margin-top:20px;
+padding:12px 28px;
+border-radius:40px;
+background:white;
+color:#ec4899;
+border:1px solid pink;
+cursor:pointer;
+transition:.3s;
+}
+
+.nav-btn:hover{
+transform:translateY(-2px);
+background:#fff0f6;
+}
+
+#game-area{
+width:320px;
+height:260px;
+background:white;
+border-radius:20px;
+border:1px solid #ffc2da;
+position:relative;
+overflow:hidden;
+}
+
+#ai-output{
+background:white;
+padding:30px;
+border-radius:20px;
+border:1px dashed pink;
+box-shadow:0 0 25px rgba(255,182,193,0.4);
+max-width:500px;
+min-height:120px;
+font-family:'Dancing Script',cursive;
+font-size:20px;
+}
+
+.music{
+position:fixed;
+bottom:20px;
+right:20px;
+background:white;
+padding:12px;
+border-radius:50%;
+cursor:pointer;
+}
+
+canvas{
+position:fixed;
+pointer-events:none;
+top:0;
+left:0;
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<audio id="musicPlayer" loop>
+<source src="https://cdn.pixabay.com/audio/2023/10/16/audio_1d1c9d7c5c.mp3">
+</audio>
+
+<div class="music" onclick="toggleMusic()">🎵</div>
+
+<!-- PAGE 1 -->
+<section id="page1" class="page active">
+
+<h1 class="font-love text-6xl text-pink-500 mb-6">
+Haloo Nourra ✨
+</h1>
+
+<p>
+aku punya sesuatu...
+</p>
+
+<button class="nav-btn" onclick="startExperience()">
+buka 💌
+</button>
+
+</section>
+
+
+<!-- GAME -->
+<section id="page2" class="page">
+
+<h2 class="font-love text-4xl text-pink-500 mb-4">
+kumpulkan cintanya 💗
+</h2>
+
+<div id="game-area"></div>
+
+<p class="mt-4">
+love: <span id="score">0</span>/7
+</p>
+
+</section>
+
+
+<!-- LETTER -->
+<section id="page3" class="page">
+
+<div class="bg-white p-8 rounded-2xl max-w-lg">
+
+<h2 class="font-love text-3xl text-pink-500 mb-4">
+Sayangku
+</h2>
+
+<p>
+makasih udah sejauh ini.
+hadirmu selalu jadi hal favoritku.
+
+aku mungkin belum sempurna,
+tapi aku selalu mau belajar
+buat jadi lebih baik untuk kita.
+</p>
+
+<p class="mt-6 text-pink-500 text-2xl font-love">
+happy 28 💗
+</p>
+
+<button class="nav-btn" onclick="nextPage(4)">
+sentuhan ai ✨
+</button>
+
+</div>
+
+</section>
+
+
+<!-- AI -->
+<section id="page4" class="page">
+
+<h2 class="font-love text-4xl text-pink-500 mb-4">
+Cosmic Love Oracle ✨
+</h2>
+
+<div id="ai-output">
+klik tombol di bawah...
+</div>
+
+<input
+id="ai-input"
+placeholder="mood / kenangan..."
+class="mt-6 p-3 rounded-xl border"
+/>
+
+<div>
+
+<button class="nav-btn" onclick="generateLove('memory')">
+kenangan
+</button>
+
+<button class="nav-btn" onclick="generateLove('poem')">
+puisi
+</button>
+
+<button class="nav-btn" onclick="generateLove('future')">
+masa depan
+</button>
+
+</div>
+
+<button class="nav-btn" onclick="nextPage(5)">
+halaman akhir
+</button>
+
+</section>
+
+
+<!-- END -->
+<section id="page5" class="page">
+
+<h2 class="font-love text-4xl text-pink-500 mb-4">
+see you in the future ✨
+</h2>
+
+<p>
+aku tunggu semua cerita indah berikutnya...
+</p>
+
+<button class="nav-btn" onclick="nextPage(1)">
+ulang 🔄
+</button>
+
+</section>
+
+
+
+<script>
+
+function nextPage(n){
+
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"))
+
+document
+.getElementById("page"+n)
+.classList.add("active")
+
+}
+
+function startExperience(){
+
+toggleMusic()
+
+nextPage(2)
+
+setTimeout(startGame,300)
+
+}
+
+
+
+let score=0
+
+function startGame(){
+
+score=0
+
+document.getElementById("score").innerText=0
+
+const area=document.getElementById("game-area")
+
+area.innerHTML=""
+
+for(let i=0;i<7;i++){
+
+const love=document.createElement("div")
+
+love.innerHTML="💗"
+
+love.style.position="absolute"
+
+love.style.fontSize="26px"
+
+love.style.cursor="pointer"
+
+love.style.left=Math.random()*280+"px"
+
+love.style.top=Math.random()*220+"px"
+
+love.onclick=()=>{
+
+love.remove()
+
+score++
+
+document.getElementById("score").innerText=score
+
+if(score==7){
+
+confetti()
+
+setTimeout(()=>nextPage(3),1200)
+
+}
+
+}
+
+animateLove(love)
+
+area.appendChild(love)
+
+}
+
+}
+
+
+
+function animateLove(el){
+
+setInterval(()=>{
+
+const y=Math.sin(Date.now()/400)*10
+
+el.style.transform=`translateY(${y}px)`
+
+},30)
+
+}
+
+
+
+function generateLove(type){
+
+const val=document.getElementById("ai-input").value
+
+let text=""
+
+if(type=="memory"){
+
+text="semesta menyimpan kenangan kita seperti bintang... kecil tapi abadi."
+
+}
+
+if(type=="poem"){
+
+text="jika waktu berhenti,\naku harap ia berhenti saat bersamamu."
+
+}
+
+if(type=="future"){
+
+text="di masa depan, aku masih ingin menggenggam tangan yang sama."
+
+}
+
+if(val){
+
+text+="\n\n("+val+")"
+}
+
+typeWriter(text)
+
+}
+
+
+
+function typeWriter(text){
+
+let i=0
+
+const el=document.getElementById("ai-output")
+
+el.innerHTML=""
+
+const interval=setInterval(()=>{
+
+el.innerHTML+=text[i]
+
+i++
+
+if(i>=text.length)clearInterval(interval)
+
+},30)
+
+}
+
+
+
+function toggleMusic(){
+
+const music=document.getElementById("musicPlayer")
+
+if(music.paused) music.play()
+else music.pause()
+
+}
+
+
+
+//// CONFETTI
+
+const canvas=document.getElementById("confetti")
+
+const ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
+
+let pieces=[]
+
+function confetti(){
+
+for(let i=0;i<120;i++){
+
+pieces.push({
+
+x:Math.random()*canvas.width,
+
+y:Math.random()*-canvas.height,
+
+r:Math.random()*6+4,
+
+d:Math.random()*50
+
+})
+
+}
+
+animateConfetti()
+
+}
+
+
+
+function animateConfetti(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+pieces.forEach(p=>{
+
+ctx.beginPath()
+
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
+
+ctx.fill()
+
+p.y+=4
+
+})
+
+requestAnimationFrame(animateConfetti)
+
+}
+
+
+
+</script>
+
+
+</body>
+</html>
